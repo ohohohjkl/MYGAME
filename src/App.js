@@ -1,12 +1,14 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import MainScreen from './Components/Container/MainScreen';
+import React from 'react'
+import Field from './components/Field'
+import './App.css'
 
-function App() {
-  return (
-    <MainScreen/>
-  );
+const App = () => {
+    return (
+        <div className="app">
+            <div className="title">Tetris</div>
+            <Field/>
+        </div>
+    )
 }
 
-export default App;
+export {App, App as default}
