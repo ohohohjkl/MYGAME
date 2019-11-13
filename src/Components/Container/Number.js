@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import propTypes from 'prop-types';
 
-import style from '../ClassCss/Number.less';
+import style from '../ClassCss/Number.css';
 
 const render = (data) => (
   <div className={style.number}>

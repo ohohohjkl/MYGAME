@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 
-import style from '../ClassCss/Next.less';
+import style from '../ClassCss/Next.css';
 var blockShape = require('../Assistance/const').blockShape;
 
 const xy = { // 方块在下一个中的坐标

@@ -2,7 +2,7 @@ import React from 'react';
 import Immutable from 'immutable';
 import propTypes from 'prop-types';
 
-import style from '../ClassCss/Keyboard.less';
+import style from '../ClassCss/Keyboard.css';
 import Button from './Button';
 import store from '../Assistance/store';
 import todo from '../control/todo';

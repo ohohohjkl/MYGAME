@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import propTypes from 'prop-types';
 
-import style from '../ClassCss/Button.less';
+import style from '../ClassCss/Button.css';
 // import { transform } from '../Assistance/const';
 
 var transform = require('../Assistance/const').transform;

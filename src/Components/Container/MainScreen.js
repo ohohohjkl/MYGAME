@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import propTypes from 'prop-types';
-
-import style from '../ClassCss/MainScreen.less';
+import style from '../ClassCss/MainScreen.css';
 
 import Matrix from './Matrix';
 import Decorate from './Decorate';
@@ -93,7 +92,7 @@ class App extends React.Component {
 
     return (
       <div
-        className={style.app}
+        className="app"
         style={size}
       >
         <div className={classnames({ [style.rect]: true, [style.drop]: this.props.drop })}>

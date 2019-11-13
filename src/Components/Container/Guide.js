@@ -1,5 +1,5 @@
 import React from 'react';
-import style from '../ClassCss/Guide.less';
+import style from '../ClassCss/Guide.css';
 import { isMobile } from '../Assistance';
 
 // import { transform, i18n, lan } from '../Assistance/const';

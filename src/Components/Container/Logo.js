@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import propTypes from 'prop-types';
 
-import style from '../ClassCss/Logo.less';
+import style from '../ClassCss/Logo.css';
 var i18n = require('../Assistance/const').i18n;
 var lan = require('../Assistance/const').lan;
 

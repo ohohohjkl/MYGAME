@@ -3,7 +3,7 @@ import immutable, { List } from 'immutable';
 import classnames from 'classnames';
 import propTypes from 'prop-types';
 
-import style from '../ClassCss/Matrix.less';
+import style from '../ClassCss/Matrix.css';
 import { isClear } from '../Assistance/';
 // import { fillLine, blankLine } from '../Assistance/const';
 import states from '../control/states';

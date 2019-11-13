@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import propTypes from 'prop-types';
 
-import style from '../ClassCss/Music.less';
+import style from '../ClassCss/Music.css';
 
 export default class Music extends React.Component {
   shouldComponentUpdate({ data }) {

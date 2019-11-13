@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import style from '../ClassCss/Decorate.less';
+import style from '../ClassCss/Decorate.css';
 
 var i18n = require('../Assistance/const').i18n;
 var lan = require('../Assistance/const').lan;
