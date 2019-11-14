@@ -25,7 +25,8 @@ export default class Field extends Component {
             fastSpeed: 10,
             gameOver: false,
             rotate: false,
-            stepCounter: 0
+            stepCounter: 0,
+            pause:false,
         }
     }
 
@@ -37,6 +38,10 @@ export default class Field extends Component {
         document.addEventListener('keydown', this.moveRight.bind(this), false)
         document.addEventListener('keydown', this.moveDown.bind(this), false)
         document.addEventListener('keydown', this.rotate.bind(this), false)
+        document.addEventListener('keydown', this.pause.bind(this), false)
+        document.addEventListener('keydown', this.resume.bind(this), false)
+
+
     }
 
     componentWillUnmount() {
@@ -44,6 +49,9 @@ export default class Field extends Component {
         document.removeEventListener('keydown', this.moveRight.bind(this), false)
         document.removeEventListener('keydown', this.moveDown.bind(this), false)
         document.removeEventListener('keydown', this.rotate.bind(this), false)
+        document.addEventListener('keydown', this.pause.bind(this), false)
+        document.addEventListener('keydown', this.resume.bind(this), false)
+
     }
 
     flushField() {
@@ -63,7 +71,6 @@ export default class Field extends Component {
 
     moveFigure() {
         let freezeFlag = false;
-
         if (this.state.stepCounter % 3 === 0) {
             if (this.state.currentFigure) {
                 if (!this.state.nextFigure) {
@@ -128,7 +135,7 @@ export default class Field extends Component {
     }
 
     moveLeft(e) {
-        if (e.keyCode !== 37 || !this.state.currentFigure) {
+        if (e.keyCode !== 37 || !this.state.currentFigure||this.state.pause) {
             return null
         }
         let canBeShifted = true;
@@ -145,8 +152,24 @@ export default class Field extends Component {
         }
     }
 
+    pause (e) {
+        if (e.keyCode !== 80 || !this.state.currentFigure) {
+            return null
+        }
+        this.setState({pause:true});
+        window.clearInterval(this.state.interval)
+
+    }
+    resume(e){
+        if (e.keyCode !== 82 || !this.state.currentFigure) {
+            return null
+        }
+        this.setState({pause:false});
+        this.loop();
+    }
+
     moveRight(e) {
-        if (e.keyCode !== 39 || !this.state.currentFigure) {
+        if (e.keyCode !== 39 || !this.state.currentFigure||this.state.pause) {
             return null
         }
         let canBeShifted = true;
@@ -164,7 +187,7 @@ export default class Field extends Component {
     }
 
     moveDown(e) {
-        if (e.keyCode !== 40 || !this.state.currentFigure) {
+        if (e.keyCode !== 40 || !this.state.currentFigure||this.state.pause) {
             return null
         }
         this.setState({
@@ -175,7 +198,7 @@ export default class Field extends Component {
     }
 
     rotate(e) {
-        if (e.keyCode !== 38 || !this.state.currentFigure) {
+        if (e.keyCode !== 38 || !this.state.currentFigure||this.state.pause) {
             return null
         }
         this.setState({
@@ -207,9 +230,11 @@ export default class Field extends Component {
         }
     }
 
-    updateField() {
+    updateField() {     //update Field View (reRender)
         let activeField = this.state.field.map(row => {
-            return row.map(cell => cell === 'active' ? '' : cell)
+            return row.map(
+                cell => cell === 'active' ? '' : cell
+                )
         })
         this.state.currentFigure.map(item => {
             if (activeField[item[1]][item[0]] !== 'fill') {
@@ -251,15 +276,16 @@ export default class Field extends Component {
                 }
             })
             this.setState({
-                score: this.state.score + fullRows.length * fullRows.length,
+                score: this.state.score + fullRows.length * fullRows.length,    //score calculation formula
                 field: field
             })
         }
     }
 
     loop() {
+        if(!this.state.pause)
         this.setState({
-            interval: window.setInterval(() => {
+            interval: window.setInterval(() => {        //set Delay Speed
                 this.moveFigure()
                 this.flushRows()
             }, this.state.speed)
