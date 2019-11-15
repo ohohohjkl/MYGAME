@@ -3,17 +3,23 @@ import '../App.css'
 
 
 export default class MatchMaking extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            roomID:"",
+        }
+    }
 
     render() {
         return (
             <div>
                 <div className="topRadius" style={styles.accordion}>
                     <div style={styles.textLeft}>
-                        <div style={{ marginTop: 13 }}>Create Lobby</div>
+                        <div style={{ marginTop: 13 }}>{"Lobby ID: " + this.props.roomID}</div>
                     </div>
                     <div style={styles.textRightz}>
                         <div style={{ marginTop: 10 }}>
-                            <button style={styles.button} onClick={()=>{this.props.initRoom(true)}}> Connect</button>
+                            <button style={styles.button} onClick={() => { this.props.initRoom(true) }}> Create Lobby</button>
                         </div>
                     </div>
 
@@ -23,7 +29,7 @@ export default class MatchMaking extends React.Component {
                         <input type="text" style={styles.inputz}
                             value=""
                             onChange={event => {
-                                this.state.user.name = event.target.value;
+                                this.state.roomID = event.target.value;
                                 this.setState(this.state);
                             }}>
                         </input>
@@ -31,7 +37,7 @@ export default class MatchMaking extends React.Component {
 
                     <div style={styles.textRightz}>
                         <div style={{ marginTop: 10 }}>
-                            <button style={styles.button} onClick={this.props.Connect2Host}> Join Lobby</button>
+                            <button style={styles.button} onClick={()=>{this.props.joinRoom(this.state.roomID)}}> Join Lobby</button>
                         </div>
                     </div>
 

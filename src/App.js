@@ -17,7 +17,8 @@ export default class App extends React.Component {
         name: null
       },
       Connect: false,
-      createLobby:true,
+      createLobby: false,
+      roomKey: '',
     }
     this.socket = null;
   }
@@ -29,28 +30,17 @@ export default class App extends React.Component {
       this.setState(this.state);
     })
     this.socket.on('newMessage', (response) => { this.newMessage(response) });
-
+    this.socket.on('newRoomKey', (response) => { this.newAPIKey(response) });
+    this.socket.on('req2Connect', (response) => { this.req2Connect(response) });
   }
 
+  ////////chat message
   newMessage(m) {
     this.state.messages.push(
       { name: m.data.name, userId: m.id, message: m.data.mess }
     )
     this.setState(this.state);
 
-  }
-
-
-  getDisplayMessage(item) {
-    // if (item.userId == this.state.user) {
-    // if (this.state.rev)
-    return "\n" + item.message.user + ":" + item.message.mess;
-    // }
-    // return ""
-  }
-
-  Connect2Host = () => {
-    this.setState({ Connect: true });
   }
 
   sendMessage = (mess) => {
@@ -63,12 +53,37 @@ export default class App extends React.Component {
       mess.value = "";
     }
   }
+  ///////////
 
-  initRoom = (value) =>{
-    this.state.createLobby=value;
-    this.setState(this.state);
+  ///create Room
+  newAPIKey = (res) => {
+    if (this.state.userId == res.userId) {
+      this.state.roomKey = res.roomID;
+      this.setState(this.state);
+    }
   }
 
+  initRoom = (value) => {
+    this.state.createLobby = value;
+    this.setState(this.state);
+    this.socket.emit("newRoom", {
+      id: this.state.user.id,
+    });
+  }
+  ///////////
+
+  /////////join Room
+  joinRoom = (roomID) => {
+    this.socket.emit("connect2Room", {
+      id: roomID,
+    });
+  }
+
+  req2Connect = (res) => {
+    if (this.state.roomKey == res.roomID) {
+
+    }
+  }
   render() {
     const styles = {
 
@@ -183,8 +198,8 @@ export default class App extends React.Component {
         {
           this.state.Connect ?
             <div>
-              <MatchMaking initRoom={this.initRoom}/>
-              <Field createLobby={this.state.createLobby}/>
+              <MatchMaking initRoom={this.initRoom} roomID={this.state.roomKey} joinRoom={this.joinRoom} />
+              <Field createLobby={this.state.createLobby} />
 
               <div className="app_content">
                 <h1>chat box</h1>
@@ -208,13 +223,14 @@ export default class App extends React.Component {
                       this.setState(this.state);
                     }}>
                   </input>
-                  <button style={styles.btn} onClick={this.Connect2Host}> Connect</button>
+                  <button style={styles.btn} onClick={() => {
+                    this.setState({ Connect: true });
+                  }}> Connect</button>
                 </div>
               </div>
             </div>
         }
       </div>
-
     )
   }
 }

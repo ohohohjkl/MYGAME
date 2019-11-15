@@ -33,18 +33,19 @@ export default class Field extends Component {
     componentDidMount() {
         this.flushField()
         this.initFigures()
-        if (this.props.createLobby){
+
+        document.addEventListener('keydown', this.moveLeft.bind(this), false)
+        document.addEventListener('keydown', this.moveRight.bind(this), false)
+        document.addEventListener('keydown', this.moveDown.bind(this), false)
+        document.addEventListener('keydown', this.rotate.bind(this), false)
+        document.addEventListener('keydown', this.pause.bind(this), false)
+        document.addEventListener('keydown', this.resume.bind(this), false)
+    }
+
+    componentWillReceiveProps(nextProps){
+        if (nextProps.createLobby){
             this.loop();
-            document.addEventListener('keydown', this.moveLeft.bind(this), false)
-            document.addEventListener('keydown', this.moveRight.bind(this), false)
-            document.addEventListener('keydown', this.moveDown.bind(this), false)
-            document.addEventListener('keydown', this.rotate.bind(this), false)
-            document.addEventListener('keydown', this.pause.bind(this), false)
-            document.addEventListener('keydown', this.resume.bind(this), false)
         }
-        
-
-
     }
 
     componentWillUnmount() {
