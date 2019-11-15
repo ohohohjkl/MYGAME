@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Row from './Row'
 import Next from './Next'
-import {Figures} from "../figures";
+import { Figures } from "../figures";
 import './CSS/Field.css'
 
 export default class Field extends Component {
@@ -26,31 +26,37 @@ export default class Field extends Component {
             gameOver: false,
             rotate: false,
             stepCounter: 0,
-            pause:false,
+            pause: false,
         }
     }
 
     componentDidMount() {
         this.flushField()
         this.initFigures()
-        this.loop()
-        document.addEventListener('keydown', this.moveLeft.bind(this), false)
-        document.addEventListener('keydown', this.moveRight.bind(this), false)
-        document.addEventListener('keydown', this.moveDown.bind(this), false)
-        document.addEventListener('keydown', this.rotate.bind(this), false)
-        document.addEventListener('keydown', this.pause.bind(this), false)
-        document.addEventListener('keydown', this.resume.bind(this), false)
+        if (this.props.createLobby){
+            this.loop();
+            document.addEventListener('keydown', this.moveLeft.bind(this), false)
+            document.addEventListener('keydown', this.moveRight.bind(this), false)
+            document.addEventListener('keydown', this.moveDown.bind(this), false)
+            document.addEventListener('keydown', this.rotate.bind(this), false)
+            document.addEventListener('keydown', this.pause.bind(this), false)
+            document.addEventListener('keydown', this.resume.bind(this), false)
+        }
+        
 
 
     }
 
     componentWillUnmount() {
+        if (this.props.createLobby){
+
         document.removeEventListener('keydown', this.moveLeft.bind(this), false)
         document.removeEventListener('keydown', this.moveRight.bind(this), false)
         document.removeEventListener('keydown', this.moveDown.bind(this), false)
         document.removeEventListener('keydown', this.rotate.bind(this), false)
         document.addEventListener('keydown', this.pause.bind(this), false)
         document.addEventListener('keydown', this.resume.bind(this), false)
+        }
 
     }
 
@@ -62,11 +68,11 @@ export default class Field extends Component {
                 newField[i][j] = '';
             }
         }
-        this.setState({field: newField})
+        this.setState({ field: newField })
     }
 
     initFigures() {
-        this.setState({figures: Figures})
+        this.setState({ figures: Figures })
     }
 
     moveFigure() {
@@ -135,7 +141,7 @@ export default class Field extends Component {
     }
 
     moveLeft(e) {
-        if (e.keyCode !== 37 || !this.state.currentFigure||this.state.pause) {
+        if (e.keyCode !== 37 || !this.state.currentFigure || this.state.pause) {
             return null
         }
         let canBeShifted = true;
@@ -152,24 +158,24 @@ export default class Field extends Component {
         }
     }
 
-    pause (e) {
+    pause(e) {
         if (e.keyCode !== 80 || !this.state.currentFigure) {
             return null
         }
-        this.setState({pause:true});
+        this.setState({ pause: true });
         window.clearInterval(this.state.interval)
 
     }
-    resume(e){
+    resume(e) {
         if (e.keyCode !== 82 || !this.state.currentFigure) {
             return null
         }
-        this.setState({pause:false});
+        this.setState({ pause: false });
         this.loop();
     }
 
     moveRight(e) {
-        if (e.keyCode !== 39 || !this.state.currentFigure||this.state.pause) {
+        if (e.keyCode !== 39 || !this.state.currentFigure || this.state.pause) {
             return null
         }
         let canBeShifted = true;
@@ -187,7 +193,7 @@ export default class Field extends Component {
     }
 
     moveDown(e) {
-        if (e.keyCode !== 40 || !this.state.currentFigure||this.state.pause) {
+        if (e.keyCode !== 40 || !this.state.currentFigure || this.state.pause) {
             return null
         }
         this.setState({
@@ -198,7 +204,7 @@ export default class Field extends Component {
     }
 
     rotate(e) {
-        if (e.keyCode !== 38 || !this.state.currentFigure||this.state.pause) {
+        if (e.keyCode !== 38 || !this.state.currentFigure || this.state.pause) {
             return null
         }
         this.setState({
@@ -234,7 +240,7 @@ export default class Field extends Component {
         let activeField = this.state.field.map(row => {
             return row.map(
                 cell => cell === 'active' ? '' : cell
-                )
+            )
         })
         this.state.currentFigure.map(item => {
             if (activeField[item[1]][item[0]] !== 'fill') {
@@ -283,13 +289,13 @@ export default class Field extends Component {
     }
 
     loop() {
-        if(!this.state.pause)
-        this.setState({
-            interval: window.setInterval(() => {        //set Delay Speed
-                this.moveFigure()
-                this.flushRows()
-            }, this.state.speed)
-        })
+        if (!this.state.pause)
+            this.setState({
+                interval: window.setInterval(() => {        //set Delay Speed
+                    this.moveFigure()
+                    this.flushRows()
+                }, this.state.speed)
+            })
     }
 
     render() {
@@ -297,13 +303,13 @@ export default class Field extends Component {
             <div className="wrapper">
                 <div className="field">
                     {this.state.field.map((row, i) =>
-                        <Row key={i} row={row}/>
+                        <Row key={i} row={row} />
                     )}
                 </div>
                 <div className="aside">
                     <div className="status">{this.state.gameOver ? 'Game over' : ''}</div>
                     <div className="score">{this.state.score}</div>
-                    <Next figure={this.state.nextFigure} shift={this.state.fieldWidth / 2 - 2}/>
+                    <Next figure={this.state.nextFigure} shift={this.state.fieldWidth / 2 - 2} />
                 </div>
             </div>
         )

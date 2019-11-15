@@ -6,27 +6,31 @@ export default class TextEntry extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            sendMess: { user: null, mess: null },
-            rev: false,
         }
     }
 
-    sendnewMessage() {
-        if (this.state.sendMess.mess) {
-            this.state.rev = true;
-            this.socket.emit("newMessage", this.state.sendMess);
-            this.state.sendMess.mess = ""
-        }
+    componentWillMount(){
+        
+
     }
+    
+
+    checkEnter(e) {
+        console.log(e)
+        if (e.keyCode === 13) {
+          this.props.sendMessage(this.refs.messageInput);
+        }
+      }
 
 
     render() {
         return (
             <div className="bottom_wrapper">
                 <div className="message_input_wrapper">
-                    <input ref="messageInput" type="text" className="message_input" placeholder="Type your message here" onKeyUp={() => { }} />
+                    <input ref="messageInput" type="text" className="message_input" placeholder="Type your message here"
+                    onKeyUp={this.checkEnter.bind(this)} />
                 </div>
-                <div className="send_message" onClick={this.sendnewMessage.bind(this)} ref="inputMessage" >
+                <div className="send_message" onClick={() => this.props.sendMessage(this.refs.messageInput)} ref="inputMessage" >
                     <div className='icon'></div>
                     <div className='text'>Send</div>
                 </div>
