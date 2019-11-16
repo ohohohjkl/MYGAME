@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import Row from './Row'
 import Next from './Next'
 import { Figures } from "../figures";
-import './CSS/Field.css'
+import './CSS/Field.css';
+
 
 export default class Field extends Component {
     constructor(props) {
@@ -27,6 +28,9 @@ export default class Field extends Component {
             rotate: false,
             stepCounter: 0,
             pause: false,
+            loading: false,
+            connect: false,
+            partnerState:null,
         }
     }
 
@@ -40,25 +44,38 @@ export default class Field extends Component {
         document.addEventListener('keydown', this.rotate.bind(this), false)
         document.addEventListener('keydown', this.pause.bind(this), false)
         document.addEventListener('keydown', this.resume.bind(this), false)
+        this.props.socket.on('updateGameStateTo', (response) => { this.updateGameState(response) });
+
     }
 
-    componentWillReceiveProps(nextProps){
-        if (nextProps.createLobby){
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.createLobby) {
+            this.state.connect=nextProps.createLobby;
+
             this.loop();
         }
     }
 
     componentWillUnmount() {
-        if (this.props.createLobby){
+        if (this.props.createLobby) {
 
-        document.removeEventListener('keydown', this.moveLeft.bind(this), false)
-        document.removeEventListener('keydown', this.moveRight.bind(this), false)
-        document.removeEventListener('keydown', this.moveDown.bind(this), false)
-        document.removeEventListener('keydown', this.rotate.bind(this), false)
-        document.addEventListener('keydown', this.pause.bind(this), false)
-        document.addEventListener('keydown', this.resume.bind(this), false)
+            document.removeEventListener('keydown', this.moveLeft.bind(this), false)
+            document.removeEventListener('keydown', this.moveRight.bind(this), false)
+            document.removeEventListener('keydown', this.moveDown.bind(this), false)
+            document.removeEventListener('keydown', this.rotate.bind(this), false)
+            document.addEventListener('keydown', this.pause.bind(this), false)
+            document.addEventListener('keydown', this.resume.bind(this), false)
         }
 
+    }
+
+    updateGameState = (res) => {
+        if (
+            this.props.partnerIn4.id==res.gameState.playerIn4.id) {
+            this.state.partnerState=res.gameState;
+            this.setState(this.state);
+            
+        }
     }
 
     flushField() {
@@ -295,24 +312,57 @@ export default class Field extends Component {
                 interval: window.setInterval(() => {        //set Delay Speed
                     this.moveFigure()
                     this.flushRows()
+                    this.props.socket.emit("updateGameStateFrom", {
+                        field:this.state.field,
+                        gameOver:this.state.gameOver,
+                        score:this.state.score,
+                        nextFigure:this.state.nextFigure,
+                        fieldWidth:this.state.fieldWidth,
+                        roomKey:this.props.roomKey,
+                        playerIn4:this.props.playerIn4,
+                    });
                 }, this.state.speed)
             })
     }
 
     render() {
         return (
-            <div className="wrapper">
-                <div className="field">
-                    {this.state.field.map((row, i) =>
-                        <Row key={i} row={row} />
-                    )}
+            <div>
+                <div className="wrapper">
+                    <div className="field">
+                        {this.state.field.map((row, i) =>
+                            <Row key={i} row={row} />
+                        )}
+                    </div>
+                    <div className="aside">
+                        <div className="status">{this.state.gameOver ? 'Game over' : ''}</div>
+                        <div className="score">{this.state.score}</div>
+                        <Next figure={this.state.nextFigure} shift={this.state.fieldWidth / 2 - 2} />
+                        <div className="score">{this.props.playerIn4.name}</div>
+
+                    </div>
                 </div>
-                <div className="aside">
-                    <div className="status">{this.state.gameOver ? 'Game over' : ''}</div>
-                    <div className="score">{this.state.score}</div>
-                    <Next figure={this.state.nextFigure} shift={this.state.fieldWidth / 2 - 2} />
-                </div>
+
+                {
+                    this.state.connect&&this.state.partnerState?
+                        <div className="wrapper">
+                            <div className="field">
+                                {this.state.partnerState.field.map((row, i) =>
+                                    <Row key={i} row={row} />
+                                )}
+                            </div>
+                            <div className="aside">
+                                <div className="status">{this.state.partnerState.gameOver ? 'Game over' : ''}</div>
+                                <div className="score">{this.state.partnerState.score}</div>
+                                <Next figure={this.state.partnerState.nextFigure} shift={this.state.partnerState.fieldWidth / 2 - 2} />
+                                <div className="score">{this.state.partnerState.playerIn4.name}</div>
+
+                            </div>
+                        </div> : null
+                }
+
             </div>
+
         )
     }
 }

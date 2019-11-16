@@ -27,7 +27,7 @@ export default class MatchMaking extends React.Component {
                 <div className="topRadius" style={styles.accordion}>
                     <div style={styles.textLeft}>
                         <input type="text" style={styles.inputz}
-                            value=""
+                            value={this.state.roomID}
                             onChange={event => {
                                 this.state.roomID = event.target.value;
                                 this.setState(this.state);

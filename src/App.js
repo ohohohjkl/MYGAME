@@ -14,8 +14,15 @@ export default class App extends React.Component {
       messages: [],
       user: {
         id: null,
-        name: null
+        name: null,
       },
+
+      partnerIn4: {
+        id: null,
+        name: null,
+      },
+
+
       Connect: false,
       createLobby: false,
       roomKey: '',
@@ -32,6 +39,12 @@ export default class App extends React.Component {
     this.socket.on('newMessage', (response) => { this.newMessage(response) });
     this.socket.on('newRoomKey', (response) => { this.newAPIKey(response) });
     this.socket.on('req2Connect', (response) => { this.req2Connect(response) });
+    this.socket.on('connectSuccess', (response) => { this.connectSuccess(response) });
+    
+
+
+
+
   }
 
   ////////chat message
@@ -57,14 +70,14 @@ export default class App extends React.Component {
 
   ///create Room
   newAPIKey = (res) => {
-    if (this.state.userId == res.userId) {
+    if (this.state.user.id == res.userID) {
       this.state.roomKey = res.roomID;
       this.setState(this.state);
     }
   }
 
   initRoom = (value) => {
-    this.state.createLobby = value;
+    this.state.createLobby = false;
     this.setState(this.state);
     this.socket.emit("newRoom", {
       id: this.state.user.id,
@@ -76,12 +89,28 @@ export default class App extends React.Component {
   joinRoom = (roomID) => {
     this.socket.emit("connect2Room", {
       id: roomID,
+      playerIn4:{
+        id: this.state.user.id,
+        name: this.state.user.name,
+      }
     });
   }
 
   req2Connect = (res) => {
     if (this.state.roomKey == res.roomID) {
+      Object.assign(this.state.partnerIn4 , res.playerIn4);
+      this.state.createLobby  =true;
+      this.setState(this.state);
 
+      this.socket.emit("confirmConnect", {
+        userID: res.playerIn4.id,
+      });
+    }
+  }
+
+  connectSuccess = (res) => {
+    if (this.state.user.id == res.userID) {
+      this.setState({ createLobby: true });
     }
   }
   render() {
@@ -199,7 +228,8 @@ export default class App extends React.Component {
           this.state.Connect ?
             <div>
               <MatchMaking initRoom={this.initRoom} roomID={this.state.roomKey} joinRoom={this.joinRoom} />
-              <Field createLobby={this.state.createLobby} />
+              <Field createLobby={this.state.createLobby} socket={this.socket} playerIn4 = {this.state.user} partnerIn4={this.state.partnerIn4}
+              roomKey={this.state.roomKey}/>
 
               <div className="app_content">
                 <h1>chat box</h1>
