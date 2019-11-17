@@ -4,6 +4,9 @@ import Next from './Next'
 import { Figures } from "../figures";
 import './CSS/Field.css';
 
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import './CSS/react-confirm-alert.css'; // Import css
+
 
 export default class Field extends Component {
     constructor(props) {
@@ -30,8 +33,8 @@ export default class Field extends Component {
             pause: false,
             loading: false,
             connect: false,
-            partnerState:null,
-        }
+            partnerState: null,
+        };
     }
 
     componentDidMount() {
@@ -50,11 +53,17 @@ export default class Field extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.createLobby) {
-            this.state.connect=nextProps.createLobby;
-
+            this.state.connect = nextProps.createLobby;
+            window.clearInterval(this.state.interval)
             this.loop();
         }
     }
+
+    // shouldComponentUpdate(nextProps, NextState) {
+    //     // if (nextProps.createLobby==this.props.createLobby) {
+    //     //     return false;
+    //     // }
+    // }
 
     componentWillUnmount() {
         if (this.props.createLobby) {
@@ -63,19 +72,78 @@ export default class Field extends Component {
             document.removeEventListener('keydown', this.moveRight.bind(this), false)
             document.removeEventListener('keydown', this.moveDown.bind(this), false)
             document.removeEventListener('keydown', this.rotate.bind(this), false)
-            document.addEventListener('keydown', this.pause.bind(this), false)
-            document.addEventListener('keydown', this.resume.bind(this), false)
+            document.removeEventListener('keydown', this.pause.bind(this), false)
+            document.removeEventListener('keydown', this.resume.bind(this), false)
         }
 
     }
 
     updateGameState = (res) => {
-        if (
-            this.props.partnerIn4.id==res.gameState.playerIn4.id) {
-            this.state.partnerState=res.gameState;
-            this.setState(this.state);
-            
+        if (this.props.partnerIn4.id == res.gameState.playerIn4.id) {
+
+            this.state.partnerState = res.gameState;
+            if (this.state.partnerState.gameOver && this.state.gameOver) {
+                let mess = '';
+                if (this.state.partnerState.score > this.state.score)
+                    mess = this.state.partnerState.playerIn4.name + ' W I N!';
+                else if (this.state.partnerState.score < this.state.score)
+                    mess = this.props.playerIn4.name + ' W I N!';
+                else
+                    mess = ' D R A W!';
+
+                confirmAlert({
+                    onClickOutside: () => { },
+                    title: 'R E S U L T',
+                    message: mess,
+                    buttons: [
+                        {
+                            label: 'Yes',
+                            onClick: () => {
+                                this.setState({
+                                    field: [],
+                                    currentFigure: '',
+                                    currentFigureId: 0,
+                                    currentFigureType: '',
+                                    nextFigure: '',
+                                    nextFigureId: 0,
+                                    nextFigureType: '',
+                                    score: 0,
+                                    fieldWidth: 10,
+                                    fieldHeight: 20,
+                                    figures: [],
+                                    interval: null,
+                                    speed: 150,
+                                    defaultSpeed: 150,
+                                    fastSpeed: 10,
+                                    gameOver: false,
+                                    rotate: false,
+                                    stepCounter: 0,
+                                    pause: false,
+                                    loading: false,
+                                    connect: false,
+                                    partnerState: null,
+                                })
+                                this.state.connect=false;
+                                window.clearInterval(this.state.interval)
+
+                                this.flushField()
+                                this.initFigures()
+                                this.props.resetFlag();
+
+                            }
+                        },
+                        {
+                            label: 'No',
+                            onClick: () => alert('Click No')
+                        }
+                    ]
+                });
+
+            }
+
         }
+        this.setState(this.state);
+
     }
 
     flushField() {
@@ -214,6 +282,7 @@ export default class Field extends Component {
         if (e.keyCode !== 40 || !this.state.currentFigure || this.state.pause) {
             return null
         }
+        // alert(111);
         this.setState({
             speed: this.state.fastSpeed
         })
@@ -274,8 +343,66 @@ export default class Field extends Component {
         })
     }
 
-    finish() {
+    finish = () => {
         window.clearInterval(this.state.interval)
+
+        if (this.state.partnerState.gameOver) {
+            let mess = '';
+            if (this.state.partnerState.score > this.state.score)
+                mess = this.state.partnerState.playerIn4.name + ' W I N!';
+            else if (this.state.partnerState.score < this.state.score)
+                mess = this.props.playerIn4.name + ' W I N!';
+            else
+                mess = ' D R A W!';
+
+            confirmAlert({
+                title: 'R E S U L T',
+                message: mess,
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => {
+                            this.setState({
+                                field: [],
+                                currentFigure: '',
+                                currentFigureId: 0,
+                                currentFigureType: '',
+                                nextFigure: '',
+                                nextFigureId: 0,
+                                nextFigureType: '',
+                                score: 0,
+                                fieldWidth: 10,
+                                fieldHeight: 20,
+                                figures: [],
+                                interval: null,
+                                speed: 150,
+                                defaultSpeed: 150,
+                                fastSpeed: 10,
+                                gameOver: false,
+                                rotate: false,
+                                stepCounter: 0,
+                                pause: false,
+                                loading: false,
+                                connect: false,
+                                partnerState: null,
+                            })
+                            this.state.connect=false;
+
+                            this.flushField()
+                            this.initFigures()
+                            this.props.resetFlag();
+                        }
+                    },
+                    {
+                        label: 'No',
+                        onClick: () => alert('Click No')
+                    }
+                ],
+
+            });
+
+
+        }
         this.setState({
             gameOver: true
         })
@@ -307,25 +434,26 @@ export default class Field extends Component {
     }
 
     loop() {
-        if (!this.state.pause)
+        if (!this.state.pause&&this.state.connect)
             this.setState({
                 interval: window.setInterval(() => {        //set Delay Speed
                     this.moveFigure()
                     this.flushRows()
                     this.props.socket.emit("updateGameStateFrom", {
-                        field:this.state.field,
-                        gameOver:this.state.gameOver,
-                        score:this.state.score,
-                        nextFigure:this.state.nextFigure,
-                        fieldWidth:this.state.fieldWidth,
-                        roomKey:this.props.roomKey,
-                        playerIn4:this.props.playerIn4,
+                        field: this.state.field,
+                        gameOver: this.state.gameOver,
+                        score: this.state.score,
+                        nextFigure: this.state.nextFigure,
+                        fieldWidth: this.state.fieldWidth,
+                        roomKey: this.props.roomKey,
+                        playerIn4: this.props.playerIn4,
                     });
                 }, this.state.speed)
             })
     }
 
     render() {
+
         return (
             <div>
                 <div className="wrapper">
@@ -344,7 +472,7 @@ export default class Field extends Component {
                 </div>
 
                 {
-                    this.state.connect&&this.state.partnerState?
+                    this.state.connect && this.state.partnerState ?
                         <div className="wrapper">
                             <div className="field">
                                 {this.state.partnerState.field.map((row, i) =>
@@ -366,4 +494,3 @@ export default class Field extends Component {
         )
     }
 }
-

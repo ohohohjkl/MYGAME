@@ -154,7 +154,6 @@ const styles = {
         background: 'rgb(23, 23, 50)',
         cursor: 'pointer',
         padding: '0px 18px',
-        width: '65%',
         border: 'none',
         textAlign: 'left',
         outline: 'none',

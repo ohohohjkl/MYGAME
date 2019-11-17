@@ -26,6 +26,7 @@ export default class App extends React.Component {
       Connect: false,
       createLobby: false,
       roomKey: '',
+      openChat: false,
     }
     this.socket = null;
   }
@@ -40,11 +41,22 @@ export default class App extends React.Component {
     this.socket.on('newRoomKey', (response) => { this.newAPIKey(response) });
     this.socket.on('req2Connect', (response) => { this.req2Connect(response) });
     this.socket.on('connectSuccess', (response) => { this.connectSuccess(response) });
-    
+  }
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.openChatWindow.bind(this), false)
 
+  }
 
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.openChatWindow.bind(this), false)
+  }
 
+  openChatWindow(e) {
+    if (e.keyCode !== 89) {
+      return null
+    }
+    this.setState({ openChat: !this.state.openChat });
   }
 
   ////////chat message
@@ -89,7 +101,7 @@ export default class App extends React.Component {
   joinRoom = (roomID) => {
     this.socket.emit("connect2Room", {
       id: roomID,
-      playerIn4:{
+      playerIn4: {
         id: this.state.user.id,
         name: this.state.user.name,
       }
@@ -98,20 +110,30 @@ export default class App extends React.Component {
 
   req2Connect = (res) => {
     if (this.state.roomKey == res.roomID) {
-      Object.assign(this.state.partnerIn4 , res.playerIn4);
-      this.state.createLobby  =true;
+      Object.assign(this.state.partnerIn4, res.playerIn4);
+      this.state.createLobby = true;
       this.setState(this.state);
 
       this.socket.emit("confirmConnect", {
         userID: res.playerIn4.id,
+        playerIn4: {
+          id: this.state.user.id,
+          name: this.state.user.name,
+        }
       });
     }
   }
 
   connectSuccess = (res) => {
     if (this.state.user.id == res.userID) {
-      this.setState({ createLobby: true });
+      Object.assign(this.state.partnerIn4, res.playerIn4);
+      this.state.createLobby = true;
+      this.setState(this.state);
     }
+  }
+
+  resetFlag =()=>{
+    this.setState({createLobby:false});
   }
   render() {
     const styles = {
@@ -228,16 +250,30 @@ export default class App extends React.Component {
           this.state.Connect ?
             <div>
               <MatchMaking initRoom={this.initRoom} roomID={this.state.roomKey} joinRoom={this.joinRoom} />
-              <Field createLobby={this.state.createLobby} socket={this.socket} playerIn4 = {this.state.user} partnerIn4={this.state.partnerIn4}
-              roomKey={this.state.roomKey}/>
+              <Field createLobby={this.state.createLobby} socket={this.socket} playerIn4={this.state.user} partnerIn4={this.state.partnerIn4}
+                roomKey={this.state.roomKey} resetFlag={this.resetFlag} />
 
-              <div className="app_content">
-                <h1>chat box</h1>
-                <div className="chat_window">
-                  <Messages user={this.state.user} messages={this.state.messages} />
-                  <TextEntry sendMessage={this.sendMessage} />
-                </div>
-              </div>
+              {
+                this.state.openChat ?
+                  <div className="app_content">
+                    <h1>chat box</h1>
+                    <div style={{
+                      position: 'relative',
+                      width: '40%',
+                      borderRadius: 10,
+                      backgroundColor: '#fff',
+                      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)',
+                      backgroundColor: '#f8f8f8',
+                      overflow: 'hidden',
+                      height: 500,
+                    }}>
+                      <Messages user={this.state.user} messages={this.state.messages} />
+                      <TextEntry sendMessage={this.sendMessage} />
+                    </div>
+                  </div>
+                  : null
+              }
+
             </div>
             :
             <div className="topRadius" style={styles.accordion}>
