@@ -123,7 +123,7 @@ export default class Field extends Component {
                                     connect: false,
                                     partnerState: null,
                                 })
-                                this.state.connect=false;
+                                this.state.connect = false;
                                 window.clearInterval(this.state.interval)
 
                                 this.flushField()
@@ -386,7 +386,7 @@ export default class Field extends Component {
                                 connect: false,
                                 partnerState: null,
                             })
-                            this.state.connect=false;
+                            this.state.connect = false;
 
                             this.flushField()
                             this.initFigures()
@@ -434,7 +434,7 @@ export default class Field extends Component {
     }
 
     loop() {
-        if (!this.state.pause&&this.state.connect)
+        if (!this.state.pause && this.state.connect)
             this.setState({
                 interval: window.setInterval(() => {        //set Delay Speed
                     this.moveFigure()
@@ -488,9 +488,7 @@ export default class Field extends Component {
                             </div>
                         </div> : null
                 }
-
             </div>
-
         )
     }
 }

@@ -10,6 +10,7 @@
 
 .app_content{
   box-sizing: border-box;
+  margin-top: 20px;
 }
 
 .chat_window {

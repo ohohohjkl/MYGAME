@@ -3,30 +3,31 @@ import '../App.css'
 
 
 export default class MatchMaking extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            roomID:"",
+            roomID: "",
         }
     }
 
     render() {
         return (
             <div>
-                <div className="topRadius" style={styles.accordion}>
+                <div style={styles.accordion}>
                     <div style={styles.textLeft}>
-                        <div style={{ marginTop: 13 }}>{"Lobby ID: " + this.props.roomID}</div>
+                        <div style={{ fontSize: 20, lineHeight: '50px' }}>{"Lobby ID: " + this.props.roomID}</div>
                     </div>
                     <div style={styles.textRightz}>
-                        <div style={{ marginTop: 10 }}>
+                        <div>
                             <button style={styles.button} onClick={() => { this.props.initRoom(true) }}> Create Lobby</button>
                         </div>
                     </div>
 
                 </div>
-                <div className="topRadius" style={styles.accordion}>
+                <div style={styles.accordion}>
                     <div style={styles.textLeft}>
                         <input type="text" style={styles.inputz}
+                            placeholder="Enter lobby to join"
                             value={this.state.roomID}
                             onChange={event => {
                                 this.state.roomID = event.target.value;
@@ -36,8 +37,8 @@ export default class MatchMaking extends React.Component {
                     </div>
 
                     <div style={styles.textRightz}>
-                        <div style={{ marginTop: 10 }}>
-                            <button style={styles.button} onClick={()=>{this.props.joinRoom(this.state.roomID)}}> Join Lobby</button>
+                        <div>
+                            <button style={styles.button} onClick={() => { this.props.joinRoom(this.state.roomID) }}> Join Lobby</button>
                         </div>
                     </div>
 
@@ -48,117 +49,51 @@ export default class MatchMaking extends React.Component {
 }
 
 const styles = {
-
-    label: {
-        float: 'left',
-        margin: '15px 30px 0 5px',
-    },
-    subButtonN: {
-        width: 180,
-        margin: '0 auto',
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    btnN: {
-        width: 80,
-        float: 'left',
-        margin: '15px 5px',
-        background: '#2e3148',
-    },
     inputz: {
-        width: '80%',
-        background: 'rgb(81, 84, 125)',
+        width: '90%',
+        height: 50,
+        color: 'azure',
+        background: 'linear-gradient(rgb(76, 68, 124), rgb(40, 36, 64))',
+        borderRadius: 25,
         border: 'none',
-        fontSize: 18,
-        color: '#fff',
-        padding: '8px 10px',
-        boxSizing: 'border-box',
-        marginTop: 8,
-        borderRadius: 5,
+        fontSize: 16,
+        boxShadow: 'rgb(0, 0, 0) 0px 6px 50px',
         outline: 'none',
+        padding: '0 20px',
     },
-    rowsI: {
-        width: '100%',
-        float: 'left',
-        position: 'relative',
-    },
-
-    accordionI: {
-        background: 'none',
-        cursor: 'pointer',
-        padding: '0 18px',
-        width: '100%',
-        border: 'none',
-        textAlign: 'left',
-        outline: 'none',
-        fontSize: 18,
-        transition: '0.4s',
-        marginTop: 1,
-        height: 45,
-        display: 'inherit',
-        borderRadius: 'unset',
-        borderBottom: '1px solid #555',
-        boxSizing: 'border-box',
-    },
-
     textLeft: {
-        width: '40%',
+        width: 800,
         float: 'left',
         position: 'relative',
-        height: 45,
+        height: 50,
         color: 'azure'
     },
     textRight: {
-        width: '50%',
+        // width: '30%',
         float: 'left',
-        height: 45,
-        position: 'relative',
-    },
-    textRightz: {
-        width: '60%',
-        float: 'left',
-        height: 45,
+        height: 50,
         position: 'relative',
     },
     button: {
-        backgroundColor: 'rgb(105, 108, 149)',
-        color: '#ddd',
-        width: 392,
-        height: 45,
-        marginTop: -4,
-        fontWeight: '600',
-        fontSize: 14,
-        cursor: 'pointer',
-        border: 'none',
-        outline: 'none',
-        borderRadius: 10,
-        boxShadow: '0px 1px 3px rgba(0, 0, 0, .3)',
-        padding: '0px 20px',
-        position: 'relative',
-    },
-    btn: {
-        width: 80,
-        float: 'left',
-        margin: '15px 5px',
-        background: '#2e3148',
-        color: 'azure'
-
-    },
-    btnz: {
         width: 150,
-        float: 'left',
-        margin: '15px 5px',
-        background: '#d61e45',
+        height: 50,
+        color: 'azure',
+        background: 'linear-gradient(rgb(85, 170, 128), rgb(58, 116, 87))',
+        borderRadius: 25,
+        border: 'none',
+        fontSize: 16,
+        boxShadow: 'rgb(0, 0, 0) 0px 6px 50px',
+        outline: 'none',
     },
     accordion: {
-        background: 'rgb(23, 23, 50)',
+        // width: 800,
+        // margin: '0 auto',
         cursor: 'pointer',
         padding: '0px 18px',
         border: 'none',
         textAlign: 'left',
         outline: 'none',
         fontSize: 18,
-        marginTop: 1,
         height: 55,
         display: 'inherit',
         borderRadius: 0,

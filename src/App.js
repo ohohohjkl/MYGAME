@@ -32,7 +32,7 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    this.socket = io('localhost:6969');
+    this.socket = io('192.168.1.121:6969');
     this.socket.on('id', res => {
       this.state.user.id = res;
       this.setState(this.state);
@@ -132,8 +132,8 @@ export default class App extends React.Component {
     }
   }
 
-  resetFlag =()=>{
-    this.setState({createLobby:false});
+  resetFlag = () => {
+    this.setState({ createLobby: false });
   }
   render() {
     const styles = {
@@ -156,15 +156,16 @@ export default class App extends React.Component {
       },
       inputz: {
         width: '100%',
-        background: '#21233c',
+        height: 60,
         border: 'none',
         fontSize: 18,
         color: '#fff',
-        padding: '8px 10px',
+        padding: '8px 30px',
         boxSizing: 'border-box',
-        marginTop: -10,
-        borderRadius: 5,
+        borderRadius: 30,
         outline: 'none',
+        background: 'rgb(76, 68, 124)',
+        boxShadow: 'rgb(0, 0, 0) 0px 6px 50px',
       },
       rowsI: {
         width: '100%',
@@ -172,51 +173,36 @@ export default class App extends React.Component {
         position: 'relative',
       },
 
-      accordionI: {
-        background: 'none',
-        cursor: 'pointer',
-        padding: '0 18px',
-        width: '100%',
-        border: 'none',
-        textAlign: 'left',
-        outline: 'none',
-        fontSize: 18,
-        transition: '0.4s',
-        marginTop: 1,
-        height: 45,
-        display: 'inherit',
-        borderRadius: 'unset',
-        borderBottom: '1px solid #555',
-        boxSizing: 'border-box',
-      },
-
       textLeft: {
-        width: '40%',
+        width: '35%',
         float: 'left',
         position: 'relative',
-        height: 45,
+        height: 60,
         color: 'azure'
       },
       textRight: {
         width: '50%',
         float: 'left',
-        height: 45,
+        height: 50,
         position: 'relative',
       },
       textRightz: {
-        width: '60%',
+        width: '65%',
         float: 'left',
-        height: 45,
+        height: 50,
         position: 'relative',
       },
 
       btn: {
-        width: 80,
-        float: 'left',
-        margin: '15px 5px',
-        background: '#2e3148',
-        color: 'azure'
-
+        width: 110,
+        height: 50,
+        color: 'azure',
+        margin: '30px 0px',
+        background: 'linear-gradient(rgb(85, 170, 128), rgb(58, 116, 87))',
+        borderRadius: 25,
+        border: 'none',
+        fontSize: 16,
+        boxShadow: 'rgb(0, 0, 0) 0px 6px 50px',
       },
       btnz: {
         width: 150,
@@ -224,31 +210,43 @@ export default class App extends React.Component {
         margin: '15px 5px',
         background: '#d61e45',
       },
-      accordion: {
-        background: '#171732',
-        cursor: 'pointer',
+      container: {
+        background: 'none',
         padding: '0 18px',
-        width: '100%',
-        border: 'none',
+        width: 700,
         textAlign: 'left',
-        outline: 'none',
         fontSize: 18,
-        marginTop: 1,
-        height: 45,
         display: 'inherit',
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
         boxSizing: 'border-box',
+        margin: '0 auto',
       },
+      title: {
+        marginTop: '8%',
+        fontSize: 50,
+        fontWeight: 600,
+        marginBottom: 50,
+        color: '#fff',
+        textShadow: '0 0 10px #fff',
+      },
+      center: {
+        width: '100%',
+        float: 'left',
+      },
+      main: {
+        width: 1000,
+        margin: '0px auto',
+      }
     }
     return (
-      <div className="app">
-        <div className="title">X E P H I N H</div>
+      <div className="app" style={styles.app}>
+        <div className="title" style={styles.title}>X E P * H I N H</div>
         {
           this.state.Connect ?
-            <div>
+            <div style={styles.main}>
               <MatchMaking initRoom={this.initRoom} roomID={this.state.roomKey} joinRoom={this.joinRoom} />
               <Field createLobby={this.state.createLobby} socket={this.socket} playerIn4={this.state.user} partnerIn4={this.state.partnerIn4}
                 roomKey={this.state.roomKey} resetFlag={this.resetFlag} />
@@ -256,7 +254,6 @@ export default class App extends React.Component {
               {
                 this.state.openChat ?
                   <div className="app_content">
-                    <h1>chat box</h1>
                     <div style={{
                       position: 'relative',
                       width: '40%',
@@ -265,8 +262,9 @@ export default class App extends React.Component {
                       boxShadow: '0 10px 20px rgba(0, 0, 0, 0.15)',
                       backgroundColor: '#f8f8f8',
                       overflow: 'hidden',
-                      height: 500,
+                      height: 404,
                     }}>
+                      <h1 style={{ textAlign: 'center' }}>Chat box</h1>
                       <Messages user={this.state.user} messages={this.state.messages} />
                       <TextEntry sendMessage={this.sendMessage} />
                     </div>
@@ -276,12 +274,12 @@ export default class App extends React.Component {
 
             </div>
             :
-            <div className="topRadius" style={styles.accordion}>
+            <div style={styles.container}>
               <div style={styles.textLeft}>
-                <div style={{ marginTop: 13 }}>Player Name</div>
+                <div style={{ fontSize: 30, lineHeight: '60px', textShadow: '0 0 10px #fff', }}>Player Name</div>
               </div>
               <div style={styles.textRightz}>
-                <div style={{ marginTop: 10 }}>
+                <div>
                   <input type="text" style={styles.inputz}
                     value={this.state.user.name}
                     onChange={event => {

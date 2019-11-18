@@ -9,18 +9,18 @@
 
 .cell::after{
     content: '';
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     position: absolute;
-    left: 2px;
-    top: 2px;
+    left: 1px;
+    top: 1px;
     border: 1px solid #fff;
 }
 
 .fill {
-    background: blue;
+    background: rgb(37, 179, 108);
 }
 
 .active {
-    background: cornflowerblue;
+    background: rgb(51, 255, 0);
 }
