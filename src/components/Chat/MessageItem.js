@@ -3,8 +3,6 @@ import React from 'react';
 import '../CSS/Chat.css';
 
 export default class MessageItem extends React.Component {
-
-    
     render () {
         return (
             <li className={this.props.user.isAligned? "message right appeared": "message left appeared"}>

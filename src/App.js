@@ -32,7 +32,7 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    this.socket = io('192.168.1.121:6969');
+    this.socket = io('localhost:6969');
     this.socket.on('id', res => {
       this.state.user.id = res;
       this.setState(this.state);

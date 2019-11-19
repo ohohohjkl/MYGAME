@@ -34,6 +34,7 @@ export default class Field extends Component {
             loading: false,
             connect: false,
             partnerState: null,
+            keyDown:false,
         };
     }
 
@@ -170,14 +171,16 @@ export default class Field extends Component {
                     this.setState({
                         nextFigure: randomFigure.path,
                         nextFigureId: randomFigure.id,
-                        nextFigureType: randomFigure.type
+                        nextFigureType: randomFigure.type,
+                        keyDown:false,
                     })
                     if (this.state.speed !== this.state.defaultSpeed) {
                         this.setState({
                             speed: this.state.defaultSpeed
                         })
                         window.clearInterval(this.state.interval)
-                        window.setTimeout(() => this.loop(), this.state.speed)
+                        this.loop();
+                        // window.setTimeout(() => this.loop(), this.state.speed)
                         return
                     }
                 }
@@ -213,10 +216,12 @@ export default class Field extends Component {
                 }
             } else {
                 let randomFigure = this.state.figures[Math.floor(Math.random() * this.state.figures.length)]
+
                 this.setState({
                     currentFigure: randomFigure.path,
                     currentFigureId: randomFigure.id,
-                    currentFigureType: randomFigure.type
+                    currentFigureType: randomFigure.type,
+                    keyDown:false,
                 })
             }
         }
@@ -283,11 +288,15 @@ export default class Field extends Component {
             return null
         }
         // alert(111);
-        this.setState({
-            speed: this.state.fastSpeed
-        })
-        window.clearInterval(this.state.interval)
-        this.loop()
+        if(!this.state.keyDown){
+            this.setState({
+                keyDown:true,
+                speed: this.state.fastSpeed
+            })
+            window.clearInterval(this.state.interval)
+            this.loop()
+        }
+        
     }
 
     rotate(e) {
